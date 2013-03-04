@@ -1,0 +1,83 @@
+(ns leiningen.pallet-dep
+  (:require [pallet.compute :as compute]
+            [pallet.api :as api]
+            [pallet.configure :as configure]
+            [pallet.actions :as action]
+            [pallet.crate.automated-admin-user :as admin-user]
+            [pallet.crate.java :as java]
+            [pallet.crate.lein :as lein]
+            [pallet.crate.ssh-key :as ssh-key]
+            [pallet.script :as script]
+            [pallet.crate.git :as git]
+            [clojure.java.io :as io]))
+
+;; TODO CONSIDER BUILDING ON BRUCES-QUICK-START... AS A DEP?
+;; mention you can repl in and mess with this
+;; todo, add hook for deployment code inserted via project.clj
+
+(defn server-spec
+  "Install lein and git, create a user, pull from github, fire up application"
+  [user pub-key pri-key git-url checkout-dir]
+  (api/server-spec
+   :extends [(java/java {})]
+   :phases
+   {:bootstrap (api/plan-fn
+                (admin-user/automated-admin-user))
+
+    :configure
+
+    (api/plan-fn
+
+     ;; Update packages and install lein and git
+     (action/package-manager :update)
+     (lein/install-lein)
+     (git/install-git)
+
+     ;; Setup deployment user
+     (action/user "fuzzer" :action :create :shell :bash :create-home true)
+     (ssh-key/install-key user "id_rsa" pri-key pub-key)
+
+     ;; Sudo pull from github
+     (action/exec-script "cd ~")
+     (pallet.action/with-action-options {:sudo-user user}
+
+       ;; We need to pull from github without any prompts
+       (action/remote-file (str "/home/" user "/.ssh/config")
+                           :content "Host *github.com\n    StrictHostKeyChecking no")
+
+       ;; Clone from git and cd in
+       (git/clone git-url :checkout-dir "/home/" user "/" checkout-dir)
+       (action/exec-script "cd " checkout-dir)
+
+       ;; Fire up application
+       (lein/lein "ring" "server"))
+
+     )}))
+
+
+(defn setup [pallet]
+  (api/converge
+   (assoc pallet :count 1)
+   :compute (configure/compute-service :aws)))
+
+(defn teardown [pallet]
+  (api/converge
+   (assoc pallet :count 0)
+   :compute (configure/compute-service :aws)))
+
+(defn pallet-dep
+  "Deploy your ring app to the cloud via a git clone from a private github repo."
+  [{:keys [pallet-fuz]} & args]
+  (let [server-spec (server-spec (or (-> pallet-fuz :user) "fuzzer")
+                                 (-> pallet-fuz :pub-key-path io/file slurp)
+                                 (-> pallet-fuz :pri-key-path io/file slurp)
+                                 (-> pallet-fuz :git-url)
+                                 (or (-> pallet-fuz :checkout-dir) "fuz-tmp"))
+        pallet (api/group-spec "fuzgroup"
+                               :extends [base-server server-spec]
+                               :node-spec (-> pallet-fuz :node-spec api/node-spec))]
+    (condp = (first args)
+      :setup
+      (setup pallet)
+      :teardown
+      (teardown pallet))))
