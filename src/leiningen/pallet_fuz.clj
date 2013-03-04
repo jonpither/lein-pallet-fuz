@@ -1,4 +1,5 @@
 (ns leiningen.pallet-fuz
+  (use [clojure.pprint :only [pprint]])
   (:require [pallet.compute :as compute]
             [pallet.api :as api]
             [pallet.configure :as configure]
@@ -19,7 +20,7 @@
   "Install lein and git, create a user, pull from github, fire up application"
   [user pub-key pri-key git-url checkout-dir]
   (api/server-spec
-   :extends [(java/java {})]
+   :extends [(java/java {}) (lein/leiningen {})]
    :phases
    {:bootstrap (api/plan-fn
                 (admin-user/automated-admin-user))
@@ -46,7 +47,7 @@
                            :content "Host *github.com\n    StrictHostKeyChecking no")
 
        ;; Clone from git and cd in
-       (git/clone git-url :checkout-dir "/home/" user "/" checkout-dir)
+       (git/clone git-url :checkout-dir (str "/home/" user "/" checkout-dir))
        (action/exec-script "cd " checkout-dir)
 
        ;; Fire up application
@@ -56,16 +57,18 @@
 
 
 (defn setup [pallet]
+  (println "Setting up...")
   (api/converge
    (assoc pallet :count 1)
    :compute (configure/compute-service :aws)))
 
 (defn teardown [pallet]
+  (println "Tearing down...")
   (api/converge
    (assoc pallet :count 0)
    :compute (configure/compute-service :aws)))
 
-(defn pallet-dep
+(defn pallet-fuz
   "Deploy your ring app to the cloud via a git clone from a private github repo."
   [{:keys [pallet-fuz]} & args]
   (let [server-spec (server-spec (or (-> pallet-fuz :user) "fuzzer")
@@ -73,11 +76,18 @@
                                  (-> pallet-fuz :pri-key-path io/file slurp)
                                  (-> pallet-fuz :git-url)
                                  (or (-> pallet-fuz :checkout-dir) "fuz-tmp"))
+
         pallet (api/group-spec "fuzgroup"
                                :extends [server-spec]
-                               :node-spec (-> pallet-fuz :node-spec api/node-spec))]
-    (condp = (first args)
-      :setup
-      (setup pallet)
-      :teardown
-      (teardown pallet))))
+                               :node-spec (-> pallet-fuz :node-spec
+                                              ))
+
+        result (condp = (keyword (first args))
+                 :setup
+                 (setup pallet)
+                 :teardown
+                 (teardown pallet)
+                 :else
+                 (println "Please specify either setup or teardown operation"))]
+
+    (pprint result)))
