@@ -1,4 +1,4 @@
-(ns leiningen.pallet-dep
+(ns leiningen.pallet-fuz
   (:require [pallet.compute :as compute]
             [pallet.api :as api]
             [pallet.configure :as configure]
@@ -74,7 +74,7 @@
                                  (-> pallet-fuz :git-url)
                                  (or (-> pallet-fuz :checkout-dir) "fuz-tmp"))
         pallet (api/group-spec "fuzgroup"
-                               :extends [base-server server-spec]
+                               :extends [server-spec]
                                :node-spec (-> pallet-fuz :node-spec api/node-spec))]
     (condp = (first args)
       :setup
