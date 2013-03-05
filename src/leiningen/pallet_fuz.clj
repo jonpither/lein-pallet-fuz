@@ -52,10 +52,6 @@
 
        (action/exec-script (str "cd /home/" ~user "/" ~checkout-dir))
 
-       (action/exec-script "echo $HOME")
-       (action/exec-script "whoami")
-       (action/exec-script "pwd")
-
        ;; Fire up application
        (lein/lein "version"))
 )}))
