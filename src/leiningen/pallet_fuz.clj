@@ -60,7 +60,7 @@
        (action/exec-script "pwd")
 
        ;; Fire up application
-       (lein/lein "ring" "server"))
+       (lein/lein "ring" "server" "&" "&>" "foo.out"))
 )}))
 
 
