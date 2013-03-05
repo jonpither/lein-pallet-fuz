@@ -15,6 +15,7 @@
 ;; todo: add hook for deployment code inserted via project.clj?
 ;; todo: security is broken - can't access the running web app at all
 ;; todo: the spawning of sep process is broken, need to test this
+;;  do it via upstart.
 ;; todo: otherwise it's working fine..
 
 (defn server-spec
@@ -38,12 +39,7 @@
      (action/user user :action :create :shell :bash :create-home true)
      (ssh-key/install-key user "id_rsa" pri-key pub-key)
 
-     (action/exec-script (str "sudo su " ~user " -c 'lein version'"))
-
-     ;; <hugod> just to summarise then: whoami returns the user, but HOME is incorrect
-     ;; could prob make it work by sudo -c route
-
-     (pallet.action/with-action-options {:sudo-user user
+       (pallet.action/with-action-options {:sudo-user user
                                          :script-env {:HOME (str "/home/" user)}
                                          :script-dir (str "/home/" user "/" checkout-dir)}
 
@@ -61,7 +57,7 @@
        (action/exec-script "pwd")
 
        ;; Fire up application
-       (lein/lein "ring" "server" "&" "&>" "foo.out"))
+       (lein/lein "version"))
 )}))
 
 
