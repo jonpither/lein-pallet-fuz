@@ -10,7 +10,7 @@
 
   :dependencies [
                  ;; The latest pallet
-                 [com.palletops/pallet "0.8.0-beta.1"]
+                 [com.palletops/pallet "0.8.0-SNAPSHOT"]
 
                  ;; The latest jclouds fun
                  [org.cloudhoist/pallet-jclouds "1.5.2"]

@@ -29,18 +29,22 @@
 
     (api/plan-fn
 
-     ;; Update packages and install lein and git
      (action/package-manager :update)
      (lein/install-lein)
      (git/install-git)
 
      ;; Setup deployment user
-     (action/user "fuzzer" :action :create :shell :bash :create-home true)
+     (action/user user :action :create :shell :bash :create-home true)
      (ssh-key/install-key user "id_rsa" pri-key pub-key)
 
-     ;; Sudo pull from github
-     (action/exec-script "cd ~")
-     (pallet.action/with-action-options {:sudo-user user}
+     (action/exec-script (str "sudo su " ~user " -c 'lein version'"))
+
+     ;; <hugod> just to summarise then: whoami returns the user, but HOME is incorrect
+     ;; could prob make it work by sudo -c route
+
+     (pallet.action/with-action-options {:sudo-user user
+                                         :script-env {:HOME (str "/home/" user)}
+                                         :script-dir (str "/home/" user "/" checkout-dir)}
 
        ;; We need to pull from github without any prompts
        (action/remote-file (str "/home/" user "/.ssh/config")
@@ -48,12 +52,16 @@
 
        ;; Clone from git and cd in
        (git/clone git-url :checkout-dir (str "/home/" user "/" checkout-dir))
-       (action/exec-script "cd " checkout-dir)
+
+       (action/exec-script (str "cd /home/" ~user "/" ~checkout-dir))
+
+       (action/exec-script "echo $HOME")
+       (action/exec-script "whoami")
+       (action/exec-script "pwd")
 
        ;; Fire up application
        (lein/lein "ring" "server"))
-
-     )}))
+)}))
 
 
 (defn setup [pallet]
@@ -79,8 +87,7 @@
 
         pallet (api/group-spec "fuzgroup"
                                :extends [server-spec]
-                               :node-spec (-> pallet-fuz :node-spec
-                                              ))
+                               :node-spec (-> pallet-fuz :node-spec))
 
         result (condp = (keyword (first args))
                  :setup
