@@ -12,9 +12,10 @@
             [pallet.crate.git :as git]
             [clojure.java.io :as io]))
 
-;; TODO CONSIDER BUILDING ON BRUCES-QUICK-START... AS A DEP?
-;; mention you can repl in and mess with this
-;; todo, add hook for deployment code inserted via project.clj
+;; todo: add hook for deployment code inserted via project.clj?
+;; todo: security is broken - can't access the running web app at all
+;; todo: the spawning of sep process is broken, need to test this
+;; todo: otherwise it's working fine..
 
 (defn server-spec
   "Install lein and git, create a user, pull from github, fire up application"
