@@ -51,15 +51,14 @@
 
        ;; Trigger a download of lein
        (lein/lein "version"))
-     )
 
-    (action/service-script "pallet-fuz"
-                           :template pallet-fuz-upstart
-                           :service-impl :upstart
-                           :literal true
-                           :values {:fuz-user user
-                                    :checkout-dir checkout-dir})
-    )}))
+     (action/service-script "pallet-fuz"
+                            :template pallet-fuz-upstart
+                            :service-impl :upstart
+                            :literal true
+                            :values {:fuz-user user
+                                     :checkout-dir checkout-dir})
+     )}))
 
 (defn setup [pallet]
   (println "Setting up...")
