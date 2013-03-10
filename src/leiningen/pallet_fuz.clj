@@ -58,6 +58,8 @@
                             :literal true
                             :values {:fuz-user user
                                      :checkout-dir checkout-dir})
+
+     (action/service "pallet-fuz" :action :start :service-impl :upstart)
      )}))
 
 (defn setup [pallet]
