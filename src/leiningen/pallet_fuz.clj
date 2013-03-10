@@ -13,10 +13,8 @@
             [clojure.java.io :as io]))
 
 ;; todo: add hook for deployment code inserted via project.clj?
-;; todo: security is broken - can't access the running web app at all
-;; todo: the spawning of sep process is broken, need to test this
-;;  do it via upstart.
-;; todo: otherwise it's working fine..
+
+(def pallet-fuz-upstart "upstart.conf")
 
 (defn server-spec
   "Install lein and git, create a user, pull from github, fire up application"
@@ -28,7 +26,6 @@
                 (admin-user/automated-admin-user))
 
     :configure
-
     (api/plan-fn
 
      (action/package-manager :update)
@@ -39,7 +36,7 @@
      (action/user user :action :create :shell :bash :create-home true)
      (ssh-key/install-key user "id_rsa" pri-key pub-key)
 
-       (pallet.action/with-action-options {:sudo-user user
+     (pallet.action/with-action-options {:sudo-user user
                                          :script-env {:HOME (str "/home/" user)}
                                          :script-dir (str "/home/" user "/" checkout-dir)}
 
@@ -52,10 +49,17 @@
 
        (action/exec-script (str "cd /home/" ~user "/" ~checkout-dir))
 
-       ;; Fire up application
+       ;; Trigger a download of lein
        (lein/lein "version"))
-)}))
+     )
 
+    (action/service-script "pallet-fuz"
+                           :template pallet-fuz-upstart
+                           :service-impl :upstart
+                           :literal true
+                           :values {:fuz-user user
+                                    :checkout-dir checkout-dir})
+    )}))
 
 (defn setup [pallet]
   (println "Setting up...")
