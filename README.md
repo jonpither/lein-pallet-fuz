@@ -1,25 +1,22 @@
 # lein-pallet-dep
 
-A Leiningen plugin to do many wonderful things.
+A Leiningen plugin for deploying ring applications to the cloud via pulling from a private github repo. You configure it via your project.clj. Tested with EC2 and an Ubuntu instance.
 
 ## Usage
 
-FIXME: Use this for user-level plugins:
+Put `[lein-pallet-fuz "0.1.0]` into the `:plugins` vector of your project.clj.
 
-Put `[lein-pallet-dep "0.1.0-SNAPSHOT"]` into the `:plugins` vector of your
-`:user` profile, or if you are on Leiningen 1.x do `lein plugin install
-lein-pallet-dep 0.1.0-SNAPSHOT`.
+    $ lein pallet-fuz
 
-FIXME: Use this for project-level plugins:
 
-Put `[lein-pallet-dep "0.1.0-SNAPSHOT"]` into the `:plugins` vector of your project.clj.
+Consult the sample project file here. You'll need to setup github as to authorise using the ssh keypair you want to use. Github has the 'deployment key' feature exactly for this purpose.
 
-FIXME: and add an example usage that actually makes sense:
+## Limitations
 
-    $ lein pallet-dep
+This plugin is quite simple so if you want to do more with Pallet then you should probably just rip this code and do whatever. It could be possible to make this plugin extensible but for the moment I'm wary of maintaining a layer on top of pallet.
 
 ## License
 
-Copyright © 2013 FIXME
+Copyright © 2013 @jonpither
 
-Distributed under the Eclipse Public License, the same as Clojure.
+Do whatever you want with it
