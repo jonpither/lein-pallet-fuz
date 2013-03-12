@@ -50,7 +50,7 @@
 
 (defn server-spec
   "Install lein and git, create a user, pull from github, fire up application"
-  [user pub-key pri-key git-url checkout-dir]
+  [config]
   (api/server-spec
    :extends [(java/java {}) (lein/leiningen {}) (git/git {})]
    :phases
@@ -59,7 +59,7 @@
 
     :configure
     (api/plan-fn
-     (install-application user pub-key pri-key git-url checkout-dir))}))
+     (install-application config))}))
 
 (defn setup [pallet]
   (println "Setting up...")
