@@ -6,14 +6,18 @@ A Leiningen plugin for deploying ring applications to the cloud via pulling from
 
 Put `[lein-pallet-fuz "0.1.0]` into the `:plugins` vector of your project.clj.
 
-    $ lein pallet-fuz
+    $ lein pallet-fuz setup
+
+and
+
+	$ lein pallet-fuz teardown
 
 
-Consult the sample project file here. You'll need to setup github as to authorise using the ssh keypair you want to use. Github has the 'deployment key' feature exactly for this purpose.
+Consult the [sample-project.clj](https://github.com/jonpither/lein-pallet-fuz/blob/stable/sample-project.clj) file here. You'll need to setup github as to authorise using the ssh keypair you want to use. Github has the 'deployment key' feature exactly for this purpose.
 
 ## Limitations
 
-This plugin is quite simple so if you want to do more with Pallet then you should probably just rip this code and do whatever. It could be possible to make this plugin extensible but for the moment I'm wary of maintaining a layer on top of pallet.
+This plugin is quite simple so if you want to do more with Pallet then you should probably just rip this code and do whatever. It could be possible in the future to make this plugin extensible but right now it isnt.
 
 ## License
 

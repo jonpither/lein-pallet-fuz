@@ -13,12 +13,27 @@
   :plugins [[lein-pallet-fuz "0.1.0"]]
 
   ;; Ensure you fill in the place-holders
+  ;;
+  ;; Mandatory:
+  ;;   git-url - url to github project
+  ;;   pub-key-path - path to the deployment user public key
+  ;;   pri-key-path - path to the deployment user private key
+  ;;
+  ;; Optional:
+  ;;   user - username of the deployment user to be created, defaults to fuzzer
+  ;;   checkout-dir - dir name where git project is cloned to, defaults to fuz-tmp
+  ;;   port - port used for ring, defaults to 3000
 
-  :pallet-fuz {:pub-key-path "{pathtopubkey}"
+  :pallet-fuz {
+
+               ;; Mandatory pallet-fuz args
+
+               :pub-key-path "{pathtopubkey}"
                :pri-key-path "{pathtoprivkey}"
                :git-url "{github-url}"
-               :user "{some-user}"
-               :checkout-dir "{checkoutdir}"
+
+               ;; A sample EC2 pallet node-spec
+
                :node-spec {:image {:os-family :ubuntu
                                    :os-version-matches "12.04"}
                            :hardware {:hardware-id "t1.micro"}
