@@ -16,7 +16,7 @@
 (def pallet-fuz-upstart "upstart.conf")
 
 (crate/defplan install-application
-  [user pub-key pri-key git-url checkout-dir]
+  [{:keys [user pub-key pri-key git-url checkout-dir port]}]
   (action/package-manager :update)
 
   ;; Setup deployment user
@@ -43,7 +43,8 @@
                          :service-impl :upstart
                          :literal true
                          :values {:fuz-user user
-                                  :checkout-dir checkout-dir})
+                                  :checkout-dir checkout-dir
+                                  :port port})
 
   (action/service "pallet-fuz" :action :start :service-impl :upstart))
 
@@ -75,11 +76,21 @@
 (defn pallet-fuz
   "Deploy your ring app to the cloud via a git clone from a private github repo."
   [{:keys [pallet-fuz]} & args]
-  (let [server-spec (server-spec (or (-> pallet-fuz :user) "fuzzer")
-                                 (-> pallet-fuz :pub-key-path io/file slurp)
-                                 (-> pallet-fuz :pri-key-path io/file slurp)
-                                 (-> pallet-fuz :git-url)
-                                 (or (-> pallet-fuz :checkout-dir) "fuz-tmp"))
+  {:pre [(:git-url pallet-fuz) (:pub-key-path pallet-fuz) (:pri-key-path pallet-fuz)]}
+
+  (let [{:keys [git-url pub-key-path pri-key-path
+                user checkout-dir port]} pallet-fuz
+
+        server-spec (server-spec
+                     {;; mandatory args:
+                      :git-url git-url
+                      :pub-key (-> pub-key-path io/file slurp)
+                      :pri-key (-> pri-key-path io/file slurp)
+
+                      ;; optional args:
+                      :user (or user "fuzzer")
+                      :checkout-dir (or checkout-dir "fuz-tmp")
+                      :port (or port 3000)})
 
         pallet (api/group-spec "fuzgroup"
                                :extends [server-spec]
