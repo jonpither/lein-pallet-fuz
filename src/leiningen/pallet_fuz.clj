@@ -13,6 +13,11 @@
             [pallet.crate.git :as git]
             [clojure.java.io :as io]))
 
+;; TODO
+;;  - see TODO in project.clj
+;;  - what should happen if configure is run against an existing server?
+;;    - fails right now because fuzzage service is already running
+
 (def pallet-fuz-upstart "upstart.conf")
 
 (crate/defplan install-application

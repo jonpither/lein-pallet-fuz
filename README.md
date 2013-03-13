@@ -4,6 +4,8 @@ A Leiningen plugin for deploying ring applications to the cloud via pulling from
 
 ## Usage
 
+TODO setup up .pallet stuff... i.e. lein pallet add-service @  http://palletops.com/doc/first-steps/
+
 Put `[lein-pallet-fuz "0.1.0]` into the `:plugins` vector of your project.clj.
 
     $ lein pallet-fuz setup

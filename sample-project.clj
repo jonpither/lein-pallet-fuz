@@ -24,6 +24,9 @@
   ;;   checkout-dir - dir name where git project is cloned to, defaults to fuz-tmp
   ;;   port - port used for ring, defaults to 3000
 
+
+  ;; TODO SPLIT OUT THE NODE-SPEC STUFF AS PER SAMPLE PALLET PROJECT FILE
+
   :pallet-fuz {
 
                ;; Mandatory pallet-fuz args
