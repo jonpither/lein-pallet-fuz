@@ -21,7 +21,7 @@
 (def pallet-fuz-upstart "upstart.conf")
 
 (crate/defplan install-application
-  [{:keys [user pub-key pri-key git-url checkout-dir port]}]
+  [{:keys [user pub-key pri-key git-url checkout-dir port service-name]}]
   (action/package-manager :update)
 
   ;; Setup deployment user
@@ -43,7 +43,7 @@
     (action/exec-script (str "cd /home/" ~user "/" ~checkout-dir))
     (lein/lein "version"))
 
-  (action/service-script "pallet-fuz"
+  (action/service-script service-name
                          :template pallet-fuz-upstart
                          :service-impl :upstart
                          :literal true
@@ -51,7 +51,7 @@
                                   :checkout-dir checkout-dir
                                   :port port})
 
-  (action/service "pallet-fuz" :action :start :service-impl :upstart))
+  (action/service service-name :action :start :service-impl :upstart))
 
 (defn server-spec
   "Install lein and git, create a user, pull from github, fire up application"
@@ -84,7 +84,7 @@
   {:pre [(:git-url pallet-fuz) (:pub-key-path pallet-fuz) (:pri-key-path pallet-fuz)]}
 
   (let [{:keys [git-url pub-key-path pri-key-path
-                user checkout-dir port]} pallet-fuz
+                user checkout-dir port service-name group-name]} pallet-fuz
 
         server-spec (server-spec
                      {;; mandatory args:
@@ -95,9 +95,10 @@
                       ;; optional args:
                       :user (or user "fuzzer")
                       :checkout-dir (or checkout-dir "fuz-tmp")
-                      :port (or port 3000)})
+                      :port (or port 3000)
+                      :service-name (or service-name "pallet-fuz")})
 
-        pallet (api/group-spec "fuzgroup"
+        pallet (api/group-spec (or group-name "fuzgroup")
                                :extends [server-spec]
                                :node-spec (-> pallet-fuz :node-spec))
 

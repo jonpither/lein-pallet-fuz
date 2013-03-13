@@ -23,9 +23,11 @@
   ;;   user - username of the deployment user to be created, defaults to fuzzer
   ;;   checkout-dir - dir name where git project is cloned to, defaults to fuz-tmp
   ;;   port - port used for ring, defaults to 3000
+  ;;   service-name - name to use to register upstart service, defaults to pallet-fuz
+  ;;   group-name - name of the group-spec, defaults to fuzgroup
 
 
-  ;; TODO SPLIT OUT THE NODE-SPEC STUFF AS PER SAMPLE PALLET PROJECT FILE
+  ;; TODO SPLIT OUT THE NODE-SPEC STUFF AS PER SAMPLE PALLET PROJ
 
   :pallet-fuz {
 
