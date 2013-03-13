@@ -13,7 +13,7 @@
   :profiles {:dev {:plugins [[lein-pallet-fuz "0.1.0"]
                              [org.cloudhoist/pallet-lein "0.5.1"]]}}
 
-  ;; Ensure you fill in the place-holders
+  ;; Ensure you fill in the mandatory place-holders
   ;;
   ;; Mandatory:
   ;;   git-url - url to github project
