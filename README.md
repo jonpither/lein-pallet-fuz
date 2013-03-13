@@ -12,7 +12,7 @@ This plugin is primarily here to serve as a reference point for people to see ho
 
 First things first, set up pallet with the service credentials it needs. Visit the [first-steps page](http://palletops.com/doc/first-steps/). In particular you'll need some service config in your `~/.pallet directory`. See the `lein pallet add-service` task. If you're deploying to EC2 you'll need your aws-key and aws-secret-key which you can find contained within the 'security credentials' section in the EC2 portal.
 
-Consult the [sample-project.clj](https://github.com/jonpither/lein-pallet-fuz/blob/master/sample-project.clj) file here for how to configure. You'll need to setup github as to authorise using the ssh keypair you want to use. Github has the 'deployment key' feature exactly for this purpose.
+Consult the [sample-project.clj](https://github.com/jonpither/lein-pallet-fuz/blob/master/sample-project.clj) file here for how to configure. You'll need to setup github as to authorise using the ssh keypair you want to use for access to the private repo. Github has the 'deployment key' feature exactly for this purpose.
 
 Once your project.clj is setup you can now do:
 
