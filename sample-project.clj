@@ -27,8 +27,6 @@
   ;;   group-name - name of the group-spec, defaults to fuzgroup
 
 
-  ;; TODO SPLIT OUT THE NODE-SPEC STUFF AS PER SAMPLE PALLET PROJ
-
   :pallet-fuz {
 
                ;; Mandatory pallet-fuz args
