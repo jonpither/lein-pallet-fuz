@@ -1,6 +1,6 @@
-(defproject lein-pallet-fuz "0.1.0-SNAPSHOT"
+(defproject lein-pallet-fuz "0.1.0"
   :description "Plugin for deploying apps to EC2 using git"
-  :url "http://example.com/FIXME"
+  :url "https://github.com/jonpither/lein-pallet-fuz"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
 
