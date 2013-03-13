@@ -10,7 +10,8 @@
   ;; This is so when any other lein task is executed in the cloud we don't
   ;; trigger a download of all the pallet-fuz dependencies.
 
-  :plugins [[lein-pallet-fuz "0.1.0"]]
+  :profiles {:dev {:plugins [[lein-pallet-fuz "0.1.0"]
+                             [org.cloudhoist/pallet-lein "0.5.1"]]}}
 
   ;; Ensure you fill in the place-holders
   ;;
