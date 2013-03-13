@@ -25,7 +25,7 @@ and
 
 The plugin bascially executes `lein ring server` remotely, so you should try this locally if you have any problems.
 
-The output of the remote service execution is stored in `~/{user}/{checkout-dir}/out.log` - you can check this for errors.
+The output of the remote service execution is stored in `~/{user}/{checkout-dir}/out.log` so you can check this for errors.
 
 ## License
 
