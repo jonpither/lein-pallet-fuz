@@ -17,7 +17,7 @@ and
 	$ lein pallet-fuz teardown
 
 
-Consult the [sample-project.clj](https://github.com/jonpither/lein-pallet-fuz/blob/stable/sample-project.clj) file here. You'll need to setup github as to authorise using the ssh keypair you want to use. Github has the 'deployment key' feature exactly for this purpose.
+Consult the [sample-project.clj](https://github.com/jonpither/lein-pallet-fuz/blob/master/sample-project.clj) file here. You'll need to setup github as to authorise using the ssh keypair you want to use. Github has the 'deployment key' feature exactly for this purpose.
 
 You should also test your application localled with `lein ring server`.
 
