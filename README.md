@@ -1,10 +1,12 @@
-# lein-pallet-dep
+# lein-pallet-fuz
 
-A Leiningen plugin for deploying ring applications to the cloud via pulling from a private github repo. You configure it via your project.clj. Tested with EC2 and an Ubuntu instance.
+A Leiningen plugin for deploying ring applications to the cloud via pulling from a private github repo using pallet. You configure it via your project.clj. Tested with EC2 and an Ubuntu instance.
 
 ## Usage
 
-TODO setup up .pallet stuff... i.e. lein pallet add-service @  http://palletops.com/doc/first-steps/
+First things first, set up pallet with the service credentials it needs. Visit the [first-steps page](http://palletops.com/doc/first-steps/). In particular you'll need some service config in your `~/.pallet directory`. See the `lein pallet add-service` task. If you're deploying to EC2 you'll need your aws-key and aws-secret-key which you can find contained within the 'security credentials' section in the EC2 portal.
+
+TODO setup up .pallet stuff... i.e. lein pallet add-service @
 
 Put `[lein-pallet-fuz "0.1.0]` into the `:plugins` vector of your project.clj.
 
