@@ -3,15 +3,27 @@
   :url "http://example.com/"
   :license {:name "Eclipse Public License"
             :url "http://www.eclipse.org/legal/epl-v10.html"}
+
   :dependencies [[org.clojure/clojure "1.4.0"]]
+
+  ;; lein-ring needs to be available outside of a specific profile
+  :plugins [[lein-ring "0.8.3"]]
 
   ;; You can set up lein-pallet-fuz as a typical plugin dependency.
   ;; Here however we set it up as a plugin inside of a profile.
   ;; This is so when any other lein task is executed in the cloud we don't
   ;; trigger a download of all the pallet-fuz dependencies.
+  ;;
+  ;; The downside is you have to do
+  ;; lein with-profile dep pallet-fuz startup
+  ;; as oppose to
+  ;; lein pallet-fuz startup
 
-  :profiles {:dev {:plugins [[lein-pallet-fuz "0.1.0"]
+  :profiles {:dep {:plugins [[lein-pallet-fuz "0.1.0"]
                              [org.cloudhoist/pallet-lein "0.5.1"]]}}
+
+  :ring {:handler foo.bar ;; specify a real handler
+         }
 
   ;; Ensure you fill in the mandatory place-holders
   ;;
@@ -26,7 +38,6 @@
   ;;   port - port used for ring, defaults to 3000
   ;;   service-name - name to use to register upstart service, defaults to pallet-fuz
   ;;   group-name - name of the group-spec, defaults to fuzgroup
-
 
   :pallet-fuz {
 
