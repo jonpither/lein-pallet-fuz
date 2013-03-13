@@ -1,12 +1,20 @@
 # lein-pallet-fuz
 
-A Leiningen plugin for deploying ring applications to the cloud via pulling from a private github repo using pallet. You configure it via your project.clj. Tested with EC2 and an Ubuntu instance.
+A Leiningen plugin for deploying ring applications to the cloud via pulling from a private github repo using pallet. Once deployed the web app will be started remotely via `lein ring server`. You configure it via your project.clj. Tested with EC2 and an Ubuntu instance.
+
+This plugin is primarily here to serve as a reference point for people to see how you can use pallet to pull from github and to register an upstart service to fire up a webapp. If you want to do more with Pallet then you should probably just rip the code and do whatever.
+
+## Latest version
+
+`[lein-pallet-fuz "0.1.0]`
 
 ## Usage
 
 First things first, set up pallet with the service credentials it needs. Visit the [first-steps page](http://palletops.com/doc/first-steps/). In particular you'll need some service config in your `~/.pallet directory`. See the `lein pallet add-service` task. If you're deploying to EC2 you'll need your aws-key and aws-secret-key which you can find contained within the 'security credentials' section in the EC2 portal.
 
-Put `[lein-pallet-fuz "0.1.0]` into the `:plugins` vector of your project.clj.
+Consult the [sample-project.clj](https://github.com/jonpither/lein-pallet-fuz/blob/master/sample-project.clj) file here for how to configure. You'll need to setup github as to authorise using the ssh keypair you want to use. Github has the 'deployment key' feature exactly for this purpose.
+
+Once your project.clj is setup you can now do:
 
     $ lein pallet-fuz setup
 
@@ -15,13 +23,9 @@ and
 	$ lein pallet-fuz teardown
 
 
-Consult the [sample-project.clj](https://github.com/jonpither/lein-pallet-fuz/blob/master/sample-project.clj) file here. You'll need to setup github as to authorise using the ssh keypair you want to use. Github has the 'deployment key' feature exactly for this purpose.
+The plugin bascially executes `lein ring server` remotely, so you should try this locally if you have any problems.
 
-You should also test your application localled with `lein ring server`.
-
-## Limitations
-
-This plugin is quite simple so if you want to do more with Pallet then you should probably just rip this code and do whatever. It could be possible in the future to make this plugin extensible but right now it isnt.
+The output of the remote service execution is stored in `~/{user}/{checkout-dir}/out.log` - you can check this for errors.
 
 ## License
 
