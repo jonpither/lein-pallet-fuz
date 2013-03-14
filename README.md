@@ -2,7 +2,7 @@
 
 A Leiningen plugin for deploying ring applications to the cloud via pulling from a private github repo using [Pallet](http://palletops.com/). Once deployed the web app will be started remotely via `lein ring server`. You configure it via your project.clj. Tested with EC2 and an Ubuntu instance.
 
-This plugin is primarily here to serve as a reference point for people to see how you can use pallet to pull from github and to register an upstart service to fire up a webapp. If you want to do more with Pallet then you should probably just rip the code and do whatever.
+This plugin is primarily here to serve as a reference point for people to see how you can use Pallet to do this various things, such as registering an upstart service and pulling from github. If you want to do more with Pallet then you should probably just rip the code and do whatever.
 
 ## Latest version
 
