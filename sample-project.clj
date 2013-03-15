@@ -19,7 +19,7 @@
   ;; as oppose to
   ;; lein pallet-fuz startup
 
-  :profiles {:dep {:plugins [[lein-pallet-fuz "0.1.0"]
+  :profiles {:dep {:plugins [[lein-pallet-fuz "0.1.1"]
                              [org.cloudhoist/pallet-lein "0.5.1"]]}}
 
   :ring {:handler foo.bar ;; specify a real handler
@@ -38,6 +38,7 @@
   ;;   port - port used for ring, defaults to 3000
   ;;   service-name - name to use to register upstart service, defaults to pallet-fuz
   ;;   group-name - name of the group-spec, defaults to fuzgroup
+  ;;   out-file - path to file to spit output to as there can be a lot from Pallet
 
   :pallet-fuz {
 

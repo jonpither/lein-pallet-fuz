@@ -74,12 +74,13 @@
    :compute (configure/compute-service :aws)))
 
 (defn pallet-fuz
-  "Deploy your ring app to the cloud via a git clone from a private github repo."
+  "Deploy your ring app to the cloud via a git clone from a private github repo.
+   There's a lot of data coming back from Pallet so we spit it to a file."
   [{:keys [pallet-fuz]} & args]
   {:pre [(:git-url pallet-fuz) (:pub-key-path pallet-fuz) (:pri-key-path pallet-fuz)]}
 
   (let [{:keys [git-url pub-key-path pri-key-path
-                user checkout-dir port service-name group-name]} pallet-fuz
+                user checkout-dir port service-name group-name out-file]} pallet-fuz
 
         server-spec (server-spec
                      {;; mandatory args:
@@ -91,7 +92,10 @@
                       :user (or user "fuzzer")
                       :checkout-dir (or checkout-dir "fuz-tmp")
                       :port (or port 3000)
-                      :service-name (or service-name "pallet-fuz")})
+                      :service-name (or service-name "pallet-fuz")
+                      })
+
+        out-file (-> out-file (or "lein-pallet-fuz.out") io/file)
 
         pallet (api/group-spec (or group-name "fuzgroup")
                                :extends [server-spec]
@@ -103,6 +107,14 @@
                  :teardown
                  (teardown pallet)
                  :else
-                 (println "Please specify either setup or teardown operation"))]
+                 (println "Please specify either setup or teardown operation"))
 
-    (pprint result)))
+        result (deref result)]
+
+    ;; Deal with the output
+    (spit out-file (with-out-str (pprint result)))
+    (println "Wrote output to" (.getPath out-file))
+    (if (:phase-errors result)
+      (println "There are errors, check the output.")
+      (println "SUCCESS."))
+    ))
