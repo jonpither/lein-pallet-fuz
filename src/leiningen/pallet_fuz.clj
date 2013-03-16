@@ -13,19 +13,17 @@
             [pallet.crate.git :as git]
             [clojure.java.io :as io]))
 
-;; 2 settings
-;;  1 for server spec
-;;  1 for lein task?
-
 (def pallet-fuz-upstart "upstart.conf")
 
 (crate/defplan install-application
-  [{:keys [user pub-key pri-key git-url checkout-dir port service-name]}]
+  [{:keys [user pub-key-path pri-key-path git-url checkout-dir port service-name]}]
   (action/package-manager :update)
 
   ;; Setup deployment user
   (action/user user :action :create :shell :bash :create-home true)
-  (ssh-key/install-key user "id_rsa" pri-key pub-key)
+  (ssh-key/install-key user "id_rsa"
+                       (-> pub-key-path io/file slurp)
+                       (-> pri-key-path io/file slurp))
 
   (pallet.action/with-action-options {:sudo-user user
                                       :script-env {:HOME (str "/home/" user)}
@@ -52,6 +50,11 @@
 
   (action/service service-name :action :start :service-impl :upstart))
 
+(def default-settings {:user "fuzzer"
+                       :checkout-dir "fuz-tmp"
+                       :port 3000
+                       :service-name "pallet-fuz"})
+
 (defn server-spec
   "Install lein and git, create a user, pull from github, fire up application"
   [settings]
@@ -63,7 +66,7 @@
 
     :configure
     (api/plan-fn
-     (install-application settings))}))
+     (install-application (merge default-settings settings)))}))
 
 (defn setup [pallet]
   (println "Setting up...")
@@ -83,27 +86,17 @@
   [{:keys [pallet-fuz]} & args]
   {:pre [(:git-url pallet-fuz) (:pub-key-path pallet-fuz) (:pri-key-path pallet-fuz)]}
 
-  (let [{:keys [git-url pub-key-path pri-key-path
-                user checkout-dir port service-name group-name out-file]} pallet-fuz
+  (let [{:keys [group-name node-spec out-file]} pallet-fuz
 
-        server-spec (server-spec
-                     {;; mandatory args:
-                      :git-url git-url
-                      :pub-key (-> pub-key-path io/file slurp)
-                      :pri-key (-> pri-key-path io/file slurp)
-
-                      ;; optional args:
-                      :user (or user "fuzzer")
-                      :checkout-dir (or checkout-dir "fuz-tmp")
-                      :port (or port 3000)
-                      :service-name (or service-name "pallet-fuz")
-                      })
+        ;; TODO move the group-spec config out to the project.clj
+        ;;  in theory this makes this plugin extensible
+        ;;  and potentially redundant (the lein bit)
+        ;;    turn the plugin into a crate :-)
+        pallet (api/group-spec (or group-name "fuzgroup")
+                               :extends [(server-spec pallet-fuz)]
+                               :node-spec node-spec)
 
         out-file (-> out-file (or "lein-pallet-fuz.out") io/file)
-
-        pallet (api/group-spec (or group-name "fuzgroup")
-                               :extends [server-spec]
-                               :node-spec (-> pallet-fuz :node-spec))
 
         result (condp = (keyword (first args))
                  :setup
