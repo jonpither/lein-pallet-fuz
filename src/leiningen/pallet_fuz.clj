@@ -13,6 +13,10 @@
             [pallet.crate.git :as git]
             [clojure.java.io :as io]))
 
+;; 2 settings
+;;  1 for server spec
+;;  1 for lein task?
+
 (def pallet-fuz-upstart "upstart.conf")
 
 (crate/defplan install-application
@@ -50,7 +54,7 @@
 
 (defn server-spec
   "Install lein and git, create a user, pull from github, fire up application"
-  [config]
+  [settings]
   (api/server-spec
    :extends [(java/java {}) (lein/leiningen {}) (git/git {})]
    :phases
@@ -59,7 +63,7 @@
 
     :configure
     (api/plan-fn
-     (install-application config))}))
+     (install-application settings))}))
 
 (defn setup [pallet]
   (println "Setting up...")
