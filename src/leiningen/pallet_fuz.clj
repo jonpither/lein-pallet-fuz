@@ -55,7 +55,7 @@
                        :port 3000
                        :service-name "pallet-fuz"})
 
-(defn server-spec
+(defn fuz
   "Install lein and git, create a user, pull from github, fire up application"
   [settings]
   (api/server-spec
@@ -93,7 +93,7 @@
         ;;  and potentially redundant (the lein bit)
         ;;    turn the plugin into a crate :-)
         pallet (api/group-spec (or group-name "fuzgroup")
-                               :extends [(server-spec pallet-fuz)]
+                               :extends [(fuz pallet-fuz)]
                                :node-spec node-spec)
 
         out-file (-> out-file (or "lein-pallet-fuz.out") io/file)
