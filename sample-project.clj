@@ -19,7 +19,7 @@
   ;; as oppose to
   ;; lein pallet-fuz startup
 
-  :profiles {:dep {:plugins [[lein-pallet-fuz "0.1.1"]
+  :profiles {:dep {:plugins [[lein-pallet-fuz "0.1.2"]
                              [org.cloudhoist/pallet-lein "0.5.1"]]}}
 
   :ring {:handler foo.bar ;; specify a real handler

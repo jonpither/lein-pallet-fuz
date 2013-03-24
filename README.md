@@ -6,7 +6,7 @@ This plugin is primarily here to serve as a reference point for people to see ho
 
 ## Latest version
 
-`[lein-pallet-fuz "0.1.1]`
+`[lein-pallet-fuz "0.1.2]`
 
 ## Usage
 
