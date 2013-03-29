@@ -21,9 +21,10 @@
 
   ;; Setup deployment user
   (action/user user :action :create :shell :bash :create-home true)
+
   (ssh-key/install-key user "id_rsa"
-                       (-> pub-key-path io/file slurp)
-                       (-> pri-key-path io/file slurp))
+                       (-> pri-key-path io/file slurp)
+                       (-> pub-key-path io/file slurp))
 
   (pallet.action/with-action-options {:sudo-user user
                                       :script-env {:HOME (str "/home/" user)}
